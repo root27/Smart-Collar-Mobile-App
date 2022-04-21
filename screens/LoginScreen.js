@@ -3,7 +3,7 @@ import React from 'react'
 import { Button, Input } from "@rneui/themed"
 
 
-export default function LoginScreen() {
+export default function LoginScreen({ navigation }) {
 
     const [email, setEmail] = React.useState("")
     const [password, setPassword] = React.useState("")
@@ -17,7 +17,7 @@ export default function LoginScreen() {
       </View>
 
       <Button containerStyle={styles.button} title={"Login"}  />
-      <Button containerStyle={styles.button} type="outline"  title={"Register"} />
+      <Button onPress={() => navigation.navigate("Register")} containerStyle={styles.button} type="outline"  title={"Register"} />
     </KeyboardAvoidingView>
   )
 }
