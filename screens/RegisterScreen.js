@@ -1,10 +1,15 @@
 import { KeyboardAvoidingView, StyleSheet, View } from 'react-native'
 import React, { useLayoutEffect } from 'react'
 import { Input ,Text,Button} from "@rneui/themed"
+import app from "../firebase_config.js"
 
 
+
+const auth = app.auth()
 
 export default function RegisterScreen({ navigation }) {
+
+  
 
 
   const [name, setName] = React.useState('')
@@ -19,6 +24,20 @@ useLayoutEffect(() => {
   })
 }, [navigation])
 
+  const handleRegister = async(email, password) => {
+    await auth.createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        alert('Successfully registered')
+        navigation.navigate('Login')
+      }
+      )
+      .catch(error => {
+        console.log(error)
+        alert(error.message)
+      }
+      )
+  }
+
 
 
 
@@ -32,7 +51,7 @@ useLayoutEffect(() => {
         <Input placeholder="Password" type="password" secureTextEntry value={password} onChangeText={(text) => setPassword(text)} />
       </View>
 
-      <Button raised containerStyle={styles.button} title="Register" />
+      <Button onPress={() => handleRegister(email, password)} raised containerStyle={styles.button} title="Register" />
     </KeyboardAvoidingView>
   )
 }
