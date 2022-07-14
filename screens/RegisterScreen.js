@@ -2,27 +2,24 @@ import { KeyboardAvoidingView, StyleSheet, View } from 'react-native'
 import React, { useLayoutEffect } from 'react'
 import { Input ,Text,Button} from "@rneui/themed"
 import app from "../firebase_config.js"
-
+import { UserContext } from "../hooks/userContext.js"
 
 
 const auth = app.auth()
 
 export default function RegisterScreen({ navigation }) {
 
+
+  const {  setName,name } = React.useContext(UserContext)
+
   
 
 
-  const [name, setName] = React.useState('')
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
 
 
-useLayoutEffect(() => {
-  navigation.setOptions({
-    headerTitle: 'Register',
-    headerBackTitle: 'Back to Login',
-  })
-}, [navigation])
+
 
   const handleRegister = async(email, password) => {
     await auth.createUserWithEmailAndPassword(email, password)
@@ -32,8 +29,14 @@ useLayoutEffect(() => {
       }
       )
       .catch(error => {
-        console.log(error)
-        alert(error.message)
+        if (error.code === "auth/email-already-in-use") {
+          alert("Email already in use")
+
+        }
+        else if (error.code === "auth/invalid-email") {
+          alert("Invalid email")
+
+        }
       }
       )
   }

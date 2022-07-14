@@ -2,10 +2,14 @@ import { StyleSheet, Text, View, KeyboardAvoidingView } from 'react-native'
 import React from 'react'
 import { Button, Input } from "@rneui/themed"
 import app from "../firebase_config.js"
+import { UserContext } from "../hooks/userContext.js"
+
 
 const auth = app.auth()
 
 export default function LoginScreen({ navigation }) {
+
+  const {  setUser } = React.useContext(UserContext)
 
     const [email, setEmail] = React.useState("")
     const [password, setPassword] = React.useState("")
@@ -13,13 +17,19 @@ export default function LoginScreen({ navigation }) {
 
     const handleLogin = async () => {
         await auth.signInWithEmailAndPassword(email, password)
-            .then(() => {
+            .then((res) => {
                 alert("Successfully logged in")
+                setUser(res.user)
+                navigation.navigate("Home")
             }
             )
             .catch(error => {
-                console.log(error)
-                alert(error.message)
+                if (error.code === "auth/wrong-password") {
+                    alert("Wrong password")
+                }
+                else if (error.code === "auth/user-not-found") {  
+                    alert("User not found")
+                }
             }
             )
     }
